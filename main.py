@@ -15,7 +15,7 @@ if __name__ == "__main__":
     logger.info(f"Watching {dir_path}..")
     while True:
         for event in inotify.read():
-            logger.inf(event)
+            logger.info(event)
             image = event.name
             time.sleep(60)
             if image[-4:] == "jpg":
