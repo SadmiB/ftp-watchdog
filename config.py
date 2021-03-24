@@ -3,7 +3,7 @@ import logging
 
 
 CAMERA = os.getenv("CAMERA")
-SEAWEED_URL = os.environ("SEAWEED_URL")
+SEAWEED_URL = os.getenv("SEAWEED_URL")
 
 
 logging.basicConfig(format="%(asctime)8s %(levelname)-8s %(message)s")
