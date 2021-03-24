@@ -18,6 +18,6 @@ if __name__ == "__main__":
             logger.info(event)
             image = event.name
             time.sleep(60)
-            if image[-4:] == "jpg":
+            if image[-4:] == ".jpg":
                 utils.store_seaweed_snapshot(SEAWEED_URL, CAMERA, image)
 
