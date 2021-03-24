@@ -1,32 +1,38 @@
-
 import os
 import requests
-import logging
+from config import logger
 
-SEAWEED_URL = os.environ["SEAWEED_URL"] | "http://188.40.18.217:8888"
-CAMERA = os.environ["CAMERA"]  | "dslrf-bxtgj"
-
-def store_seaweed_snapshot(image):
+def store_seaweed_snapshot(camera, seaweed_url , image):
 
     year = image[0:4]
-    month = image[5:7]
-    day = image[8:10]
-    hour = image[11:13]
-    minute = image[13:15]
-    second = image[15:17]
+    month = image[4:6]
+    day = image[6:8]
+    hour = image[9:11]
+    minute = image[11:13]
+    second = image[13:15]
+
+    logger.info("Uploading image {image}..")
+    
     snapshot = minute + "_" + second + "_000.jpg"
 
-    url = SEAWEED_URL + \
-        str(CAMERA) + "/snapshots/recordings/" + \
+    url = seaweed_url + \
+        camera + "/snapshots/recordings" + \
         "/" + year + "/" + month + "/" + day + "/" + hour + "/" + snapshot
-
-    image_content = open("/home/ftpuser/" + image, 'rb')
+    logger.info("Url {url}..")
+    image_content = open("/home/ftpuser/" + camera + "/" + image, 'rb')
     files = {'file': image_content}
     
     try:
-        r = requests.post(url, files=files)
-        logging.debug(r)
+        response = requests.post(url, files=files)
+        logger.info(f"Response {response}..")
+    except Exception as e:
+        logger.info(f"Something went wrong {e}..")
     finally:
         image_content.close()
 
-    
+def upload_dir_images(camera, seaweed_url ,image):
+    images = os.listdir(image)
+    for image in images:
+        if image[-4:] == "jpg":
+            store_seaweed_snapshot(camera, seaweed_url, image)
+

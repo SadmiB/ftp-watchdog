@@ -1,20 +1,23 @@
-
-
 import os
 from inotify_simple import INotify, flags
-import logging
+import time
 
 import utils
+from config import SEAWEED_URL, CAMERA, logger
 
-inotify = INotify()
-watch_flags = flags.CREATE
-wd = inotify.add_watch('/svr/ftp', watch_flags)
 
-while True:
-    for event in inotify.read():
-        print(event)
-        image = event.name
-        utils.store_seaweed_snapshot(image)
-        
-        
+if __name__ == "__main__":
+    logger.info("Starting...")
+    inotify = INotify()
+    watch_flags = flags.CREATE
+    dir_path = '/home/ftpuser/' + CAMERA
+    wd = inotify.add_watch(dir_path, watch_flags)
+    logger.info(f"Watching {dir_path}..")
+    while True:
+        for event in inotify.read():
+            logger.inf(event)
+            image = event.name
+            time.sleep(60)
+            if image[-4:] == "jpg":
+                utils.store_seaweed_snapshot(SEAWEED_URL, CAMERA, image)
 
